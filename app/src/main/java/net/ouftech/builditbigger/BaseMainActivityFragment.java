@@ -25,9 +25,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import net.ouftech.jokedisplayer.JokeDisplayerActivity;
 import net.ouftech.ouftechcommons.BaseFragment;
 
@@ -40,26 +37,15 @@ import butterknife.Unbinder;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends BaseFragment implements EndpointsAsyncTask.EndpointsAsyncTaskListener {
+public abstract class BaseMainActivityFragment extends BaseFragment implements EndpointsAsyncTask.EndpointsAsyncTaskListener {
 
     @BindView(R.id.instructions_text_view)
     TextView instructionsTextView;
-    @BindView(R.id.adView)
-    AdView adView;
     @BindView(R.id.tell_joke_button)
     Button tellJokeButton;
     Unbinder unbinder;
     @BindView(R.id.pb_loading_indicator)
     ProgressBar pbLoadingIndicator;
-
-    public MainActivityFragment() {
-    }
-
-    @NonNull
-    @Override
-    protected String getLogTag() {
-        return "MainActivityFragment";
-    }
 
     @Override
     protected int getLayoutId() {
@@ -71,13 +57,6 @@ public class MainActivityFragment extends BaseFragment implements EndpointsAsync
                              Bundle savedInstanceState) {
         View root = super.onCreateView(inflater, container, savedInstanceState);
 
-        // Create an ad request. Check logcat output for the hashed device ID to
-        // get test ads on a physical device. e.g.
-        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .build();
-        adView.loadAd(adRequest);
         unbinder = ButterKnife.bind(this, root);
         return root;
     }
