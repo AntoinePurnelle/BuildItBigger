@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.udacity.gradle.builditbigger.R;
+import net.ouftech.builditbigger.R;
 
 
 public class MainActivity extends AppCompatActivity {
