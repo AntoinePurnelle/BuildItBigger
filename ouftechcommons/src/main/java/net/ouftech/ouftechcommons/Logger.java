@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.ouftech.builditbigger.commons;
+package net.ouftech.ouftechcommons;
 
 import android.support.annotation.NonNull;
 import android.util.Log;

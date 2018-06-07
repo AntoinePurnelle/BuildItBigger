@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".JokeDisplayerActivity"
+    android:background="@android:color/background_light">
+
+    <TextView
+        android:id="@+id/joke_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        tools:text="404 Joke not found"
+        android:textColor="@android:color/primary_text_light"
+        android:padding="16dp"/>
+
+</FrameLayout>

@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package net.ouftech.builditbigger.commons;
+package net.ouftech.ouftechcommons;
 
+import android.content.Context;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.InflateException;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -33,7 +37,7 @@ import icepick.Icepick;
  * Created by antoine.purnelle@ouftech.net on 25-02-18.
  */
 
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseFragment extends Fragment {
 
     private boolean running = false;
     private Unbinder unbinder;
@@ -76,7 +80,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     /**
      * Logs an error to the logcat in the {@link Log#ERROR} channel, Crashlytics and reports the exception to Crashlytics
      *
-     * @param tr  Exception to be reported
+     * @param tr Exception to be reported
      */
     public void loge(@NonNull Throwable tr) {
         Logger.e(getLogTag(), tr);
@@ -94,40 +98,63 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     // endregion Crashlytics
 
-
-    // region Lifecycle
+    // region Fragment Lifecycle
 
     @LayoutRes
     protected abstract int getLayoutId();
 
     @CallSuper
+    protected void initView(View view) {
+        logd(String.format("initView %s (from %s)", this, getBaseActivity()));
+    }
+
+    @CallSuper
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        logd(String.format("onCreate %s", this));
+    public void onAttach(Context context) {
+        logd(String.format("onAttach %s (from %s)", this, getBaseActivity()));
+        super.onAttach(context);
+
+        setRunning(true);
+    }
+
+    @CallSuper
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        logd(String.format("onCreate %s (from %s)", this, getBaseActivity()));
         super.onCreate(savedInstanceState);
 
         Icepick.restoreInstanceState(this, savedInstanceState);
 
         setRunning(true);
-        setContentView(getLayoutId());
-        unbinder = ButterKnife.bind(this);
     }
 
     @CallSuper
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        logd(String.format("onCreate (PersistableBundle) %s", this));
-        super.onCreate(savedInstanceState, persistentState);
-
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        logd(String.format("onCreateView %s (from %s)", this, getBaseActivity()));
         setRunning(true);
-        setContentView(getLayoutId());
-        ButterKnife.bind(this);
+        try {
+            View view = inflater.inflate(getLayoutId(), container, false);
+            unbinder = ButterKnife.bind(this, view);
+            return view;
+        } catch (InflateException e) {
+            loge(String.format("Error while inflating layout %s with ViewGroup container %s", getLayoutId(), container), e);
+            return null;
+        }
     }
 
     @CallSuper
     @Override
-    protected void onStart() {
-        logd(String.format("onStart %s", this));
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        logd(String.format("onViewCreated %s (from %s)", this, getBaseActivity()));
+        setRunning(true);
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+    @CallSuper
+    @Override
+    public void onStart() {
+        logd(String.format("onStart %s (from %s)", this, getBaseActivity()));
         super.onStart();
 
         setRunning(true);
@@ -135,8 +162,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @CallSuper
     @Override
-    protected void onResume() {
-        logd(String.format("onResume %s", this));
+    public void onResume() {
+        logd(String.format("onResume %s (from %s)", this, getBaseActivity()));
         super.onResume();
 
         setRunning(true);
@@ -144,8 +171,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @CallSuper
     @Override
-    protected void onPause() {
-        logd(String.format("onPause %s", this));
+    public void onPause() {
+        logd(String.format("onPause %s (from %s)", this, getBaseActivity()));
         super.onPause();
 
         setRunning(false);
@@ -153,8 +180,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @CallSuper
     @Override
-    protected void onStop() {
-        logd(String.format("onStop %s", this));
+    public void onStop() {
+        logd(String.format("onStop %s (from %s)", this, getBaseActivity()));
         super.onStop();
 
         setRunning(false);
@@ -162,9 +189,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @CallSuper
     @Override
-    protected void onDestroy() {
-        logd(String.format("onDestroy %s", this));
-        super.onDestroy();
+    public void onDestroyView() {
+        logd(String.format("onDestroyView %s (from %s)", this, getBaseActivity()));
+        super.onDestroyView();
 
         setRunning(false);
         unbinder.unbind();
@@ -172,27 +199,56 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @CallSuper
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        logd(String.format("onSaveInstanceState %s", this));
-        super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
+    public void onDestroy() {
+        logd(String.format("onDestroy %s (from %s)", this, getBaseActivity()));
+        super.onDestroy();
+
+        setRunning(false);
     }
 
     @CallSuper
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        logd(String.format("onSaveInstanceState (PersistableBundle) %s", this));
-        super.onSaveInstanceState(outState, outPersistentState);
+    public void onDetach() {
+        logd(String.format("onDetach %s (from %s)", this, getBaseActivity()));
+        super.onDetach();
+
+        setRunning(false);
+    }
+
+    @CallSuper
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        logd(String.format("onSaveInstanceState %s (from %s)", this, getBaseActivity()));
+        super.onSaveInstanceState(outState);
         Icepick.saveInstanceState(this, outState);
     }
 
+    /**
+     * Tries and casts the result of {@link Fragment#getActivity()} to {@link BaseActivity}
+     *
+     * @return The {@link BaseActivity} object if possible. Null if could not cast
+     */
+    @Nullable
+    public BaseActivity getBaseActivity() {
+        if (getActivity() instanceof BaseActivity)
+            return (BaseActivity) getActivity();
+        else
+            return null;
+    }
+
     public boolean isRunning() {
-        return running;
+        return running && isActivityRunning();
     }
 
     public void setRunning(boolean running) {
         this.running = running;
     }
 
-    // endregion Lifecycle
+    public boolean isActivityRunning() {
+        return getBaseActivity() != null && getBaseActivity().isRunning();
+    }
+
+    // endregion Fragment Lifecycle
+
+
 }

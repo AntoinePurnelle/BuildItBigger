@@ -1,5 +1,6 @@
 package net.ouftech.builditbigger;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -7,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-import net.ouftech.builditbigger.commons.BaseFragment;
+import net.ouftech.jokedisplayer.JokeDisplayerActivity;
 import net.ouftech.jokesprovider.JokesProvider;
+import net.ouftech.ouftechcommons.BaseFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,8 +77,14 @@ public class MainActivityFragment extends BaseFragment {
 
     @OnClick(R.id.tell_joke_button)
     public void tellJoke(View view) {
-        if (isRunning())
-            Toast.makeText(getActivity(), getJoke(), Toast.LENGTH_LONG).show();
+        if (!isRunning())
+            return;
+
+        String joke = getJoke();
+
+        Intent intent = new Intent(getActivity(), JokeDisplayerActivity.class);
+        intent.putExtra(JokeDisplayerActivity.JOKE_EXTRA, joke);
+        getActivity().startActivity(intent);
     }
 
     private String getJoke() {

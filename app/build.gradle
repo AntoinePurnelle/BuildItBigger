@@ -58,6 +58,8 @@ dependencies {
 
 
     implementation project(":jokesprovider")
+    implementation project(":ouftechcommons")
+    implementation project(":jokedisplayer")
 
     // region Android Support Library - https://developer.android.com/topic/libraries/support-library/revisions.html
 
