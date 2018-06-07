@@ -57,6 +57,7 @@ dependencies {
     endpointsServer project(path: ':backend', configuration: 'endpoints')
 
 
+    implementation project(":jokesprovider")
 
     // region Android Support Library - https://developer.android.com/topic/libraries/support-library/revisions.html
 
