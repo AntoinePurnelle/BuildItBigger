@@ -56,8 +56,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     endpointsServer project(path: ':backend', configuration: 'endpoints')
 
-
-    implementation project(":jokesprovider")
     implementation project(":ouftechcommons")
     implementation project(":jokedisplayer")
 
