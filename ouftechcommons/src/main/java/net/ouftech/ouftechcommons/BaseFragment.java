@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import icepick.Icepick;
 
 /**
  * Created by antoine.purnelle@ouftech.net on 25-02-18.
@@ -122,8 +121,6 @@ public abstract class BaseFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         logd(String.format("onCreate %s (from %s)", this, getBaseActivity()));
         super.onCreate(savedInstanceState);
-
-        Icepick.restoreInstanceState(this, savedInstanceState);
 
         setRunning(true);
     }
@@ -220,7 +217,6 @@ public abstract class BaseFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         logd(String.format("onSaveInstanceState %s (from %s)", this, getBaseActivity()));
         super.onSaveInstanceState(outState);
-        Icepick.saveInstanceState(this, outState);
     }
 
     /**

@@ -24,7 +24,7 @@ public class MyEndpoint {
 
     JokesProvider jokesProvider;
 
-
+    // Kept for the webpage use but not relevant to the project
     @ApiMethod(name = "sayHi")
     public MyBean sayHi(@Named("name") String name) {
         MyBean response = new MyBean();
@@ -32,11 +32,11 @@ public class MyEndpoint {
 
         return response;
     }
+
     @ApiMethod(name = "getJoke")
     public MyBean getJoke() {
         MyBean response = new MyBean();
 
-        jokesProvider = new JokesProvider();
         String joke = retrieveJoke();
 
         response.setData(joke);

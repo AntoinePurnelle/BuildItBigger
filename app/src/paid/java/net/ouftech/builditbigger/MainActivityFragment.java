@@ -26,9 +26,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-
 import net.ouftech.jokedisplayer.JokeDisplayerActivity;
 import net.ouftech.ouftechcommons.BaseFragment;
 

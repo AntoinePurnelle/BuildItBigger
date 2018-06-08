@@ -7,21 +7,23 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.CountDownLatch;
+
 import static junit.framework.TestCase.assertTrue;
 
 @RunWith(AndroidJUnit4.class)
-public class JokeGCETest implements EndpointsAsyncTask.EndpointsAsyncTaskListener {
+public class JokeGCETest {
     @Rule
     public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void testDoInBackground() {
-        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(this);
+    public void testDoInBackground() throws InterruptedException {
+        final CountDownLatch signal = new CountDownLatch(1);
+        EndpointsAsyncTask endpointsAsyncTask = new EndpointsAsyncTask(result -> {
+            assertTrue(result != null);
+            signal.countDown();
+        });
         endpointsAsyncTask.execute();
-    }
-
-    @Override
-    public void onResult(String result) {
-        assertTrue(result != null);
+        signal.await();
     }
 }
